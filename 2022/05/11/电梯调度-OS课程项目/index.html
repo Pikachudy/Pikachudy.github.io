@@ -1,0 +1,743 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Pikachudy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="进程管理——电梯调度系统[TOC] 开发环境开发语言：Javascript+html+css 开发框架：Vue.js 3.0+Element-plus 开发工具：Vue-cli、Vue-devtools、VScode、Edge 实现方法引入Element-plus组件作为UI，采用Vue3框架进行组件化开发 虽然 Javascript是单线程语言，但通过调用window对象的异步方法 setTim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="电梯调度-OS课程项目">
+<meta property="og:url" content="http://example.com/2022/05/11/%E7%94%B5%E6%A2%AF%E8%B0%83%E5%BA%A6-OS%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE/index.html">
+<meta property="og:site_name" content="C137">
+<meta property="og:description" content="进程管理——电梯调度系统[TOC] 开发环境开发语言：Javascript+html+css 开发框架：Vue.js 3.0+Element-plus 开发工具：Vue-cli、Vue-devtools、VScode、Edge 实现方法引入Element-plus组件作为UI，采用Vue3框架进行组件化开发 虽然 Javascript是单线程语言，但通过调用window对象的异步方法 setTim">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-11T15:26:09.000Z">
+<meta property="article:modified_time" content="2022-09-05T08:54:48.038Z">
+<meta property="article:author" content="Pikachudy">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="进程调度">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>电梯调度-OS课程项目 - C137</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>C137</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="电梯调度-OS课程项目"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-11 23:26" pubdate>
+          2022年5月11日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          88 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">电梯调度-OS课程项目</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="进程管理——电梯调度系统"><a href="#进程管理——电梯调度系统" class="headerlink" title="进程管理——电梯调度系统"></a>进程管理——电梯调度系统</h1><p>[TOC]</p>
+<h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><p>开发语言：Javascript+html+css</p>
+<p>开发框架：Vue.js 3.0+Element-plus</p>
+<p>开发工具：Vue-cli、Vue-devtools、VScode、Edge</p>
+<h3 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h3><p>引入Element-plus组件作为UI，采用Vue3框架进行组件化开发</p>
+<p>虽然 Javascript是单线程语言，但通过调用window对象的异步方法 setTimeout 以及 setInterval，使宿主环境（此处为web browser）在JS主线程之外开启多个子线程任务队列，从而完成多线程任务</p>
+<h3 id="项目浏览"><a href="#项目浏览" class="headerlink" title="项目浏览"></a>项目浏览</h3><ul>
+<li>联网进入 <a target="_blank" rel="noopener" href="https://pikachudy.github.io/ElevatorScheduling/">ElevatorScheduling (pikachudy.github.io)</a>在线浏览</li>
+</ul>
+<h3 id="界面UI说明"><a href="#界面UI说明" class="headerlink" title="界面UI说明"></a>界面UI说明</h3><h4 id="电梯内部面板UI说明："><a href="#电梯内部面板UI说明：" class="headerlink" title="电梯内部面板UI说明："></a>电梯内部面板UI说明：</h4><ul>
+<li><p>楼层序号两侧感叹号标识并不是显示错误，而会在按下警铃按钮后变为红色以表示发出紧急信号</p>
+</li>
+<li><p>电梯停靠时，在电梯内部按下当前楼层按钮，电梯会开门（相当于按下了开门键）</p>
+</li>
+<li><p>电梯内部楼层按钮按下后即被禁用，直到电梯到达该层并停靠、开门后才恢复交互性</p>
+</li>
+<li><p>电梯在某层停靠时，会自动开门，开门期间电梯不会移动，期间若不按下开关门按钮，则将在五秒后关门，继续运行。右下方蓝色按钮表示电梯门当前状态，并不能点击</p>
+</li>
+<li><p>电梯运行时开关门按钮将被禁用，无法按下。只有电梯在某一层停靠时才可以按下开关门按钮，以此实现提早关门等操作</p>
+</li>
+<li><p>电梯显示屏中楼层序号变为红色时说明电梯正在此楼停靠、门处于开启状态；上下箭头变为红色则指示这当前&#x2F;前一步运行方向</p>
+</li>
+</ul>
+<h4 id="外部呼叫面板UI说明"><a href="#外部呼叫面板UI说明" class="headerlink" title="外部呼叫面板UI说明"></a>外部呼叫面板UI说明</h4><ul>
+<li>按钮按下时变为红色并禁用，直到有对应方向的电梯在该楼层停靠时（即调度任务完成）恢复</li>
+<li>1楼的下行按钮和20楼的上行按钮只会将电梯呼叫到该层，与1楼上行、20楼下行按钮功能无区别，不会引发bug，此处留下仅为布局美观</li>
+</ul>
+<h3 id="组件划分"><a href="#组件划分" class="headerlink" title="组件划分"></a>组件划分</h3><h4 id="组件预览"><a href="#组件预览" class="headerlink" title="组件预览"></a>组件预览</h4><table>
+<thead>
+<tr>
+<th>组件名称</th>
+<th>负责内容</th>
+<th>子组件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>App</td>
+<td>接收外部按钮信息、完成外部调度逻辑,协调电梯整体调度逻辑</td>
+<td>Elevator、Floorboard</td>
+</tr>
+<tr>
+<td>Elevator</td>
+<td>实现单部电梯系统运行功能及内部调度</td>
+<td>null</td>
+</tr>
+<tr>
+<td>FloorBoard</td>
+<td>实现电梯外部按钮逻辑</td>
+<td>null</td>
+</tr>
+</tbody></table>
+<h4 id="各组件变量及功能"><a href="#各组件变量及功能" class="headerlink" title="各组件变量及功能"></a>各组件变量及功能</h4><h5 id="Elevator"><a href="#Elevator" class="headerlink" title="Elevator"></a>Elevator</h5><h6 id="维护变量"><a href="#维护变量" class="headerlink" title="维护变量"></a>维护变量</h6><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> &#123;<br>      <span class="hljs-attr">cur_floor</span>: <span class="hljs-number">1</span>, <span class="hljs-comment">//当前所在楼层</span><br>      <span class="hljs-attr">cur_direction</span>: <span class="hljs-number">0</span>, <span class="hljs-comment">//当前电梯趋势 1为上行、-1为下行、0为静止</span><br>      <span class="hljs-attr">cur_moving</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//电梯默认为静止状态、主要为了控制开关门</span><br>      <span class="hljs-attr">cur_door</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//当前门状态，true为开门</span><br>      <span class="hljs-attr">buttons_floor</span>: [], <span class="hljs-comment">//长度为20，下标+1表示楼层，内容true为被按下，在EleInit函数初始化</span><br>      <span class="hljs-attr">mission_floor</span>: [], <span class="hljs-comment">//任务序列，若内部调用无论如何都得接受</span><br>      <span class="hljs-attr">danger</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//是否报警</span><br>      <span class="hljs-attr">mine_clock</span>: <span class="hljs-literal">null</span>, <span class="hljs-comment">//存放setInterval返回的对象便于结束</span><br>    &#125;;<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h6><p>组件内部维护了单部电梯运行所需要的信息，每个电梯都有自己的任务队列 ，单部电梯按照队列内容，依据调度算法来运行，减少各部分之间的耦合，尽可能达到高内聚</p>
+<p><strong>mission_floor</strong> 存储电梯的任务序列，电梯依据一定的调度算法，按照队列中内容来运行。<br>在电梯内部按下按钮则对应楼层将直接加入该队列；在外部按下按钮则通过外部App组件来选择将该楼层的任务放入哪一个电梯的任务队列</p>
+<p>在<strong>App.vue</strong>模板中挂载五次，相当于实例化五个相同但互不干扰，独立运行的对象。采用<strong>v-for</strong>循环渲染，给每一个实例化组件赋予<strong>ref</strong>属性以方便父组件区分调用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;td v-<span class="hljs-keyword">for</span>=<span class="hljs-string">&quot;i in this.elevator_number&quot;</span> :key=<span class="hljs-string">&quot;i&quot;</span>&gt;<br>     <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">elevator</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;elevator_group&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">       @<span class="hljs-attr">upArrive</span>=<span class="hljs-string">&quot;uparriveHandler&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">       @<span class="hljs-attr">downArrive</span>=<span class="hljs-string">&quot;downarriveHandler&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">elevator</span>&gt;</span></span><br>   &lt;/td&gt;<br></code></pre></td></tr></table></figure>
+
+<h5 id="FloorBoard"><a href="#FloorBoard" class="headerlink" title="FloorBoard"></a>FloorBoard</h5><h6 id="维护变量-1"><a href="#维护变量-1" class="headerlink" title="维护变量"></a>维护变量</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> &#123;<br>      <span class="hljs-attr">buttons_upordown</span>: [], <span class="hljs-comment">// 下标为楼层减1</span><br>    &#125;;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="简要介绍"><a href="#简要介绍" class="headerlink" title="简要介绍"></a>简要介绍</h6><p><strong>buttons_upordown</strong> 存储楼层按钮对象，对应对象中两按钮按下状态</p>
+<p>在按钮可用时按下按钮，会发送事件并传递楼层、方向信息。该事件会触发父组件 <strong>App</strong> 中的调度方法来将该任务加入至合适的电梯的任务序列中（外部调度）</p>
+<h5 id="App"><a href="#App" class="headerlink" title="App"></a>App</h5><h6 id="维护变量-2"><a href="#维护变量-2" class="headerlink" title="维护变量"></a>维护变量</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> &#123;<br>      <span class="hljs-attr">elevator_number</span>: <span class="hljs-number">5</span>, <span class="hljs-comment">//电梯数目（初始化为5）</span><br>      <span class="hljs-attr">waiting_queue</span>:[]<span class="hljs-comment">//等待队列，二维数组[0为上行，1为下行][floor-1]，内部存有相应上、下行楼层等待队列计时器返回的对象</span><br>    &#125;;<br>  &#125;,<br></code></pre></td></tr></table></figure>
+
+<h6 id="简要介绍-1"><a href="#简要介绍-1" class="headerlink" title="简要介绍"></a>简要介绍</h6><p>外部调度任务有时需要等待，此时需要计时器来帮助决定何时放入合适的电梯任务序列中，需要使用 <strong>waiting_queue</strong> 存储相应任务的计时器对象</p>
+<h3 id="算法设计及实现"><a href="#算法设计及实现" class="headerlink" title="算法设计及实现"></a>算法设计及实现</h3><h4 id="电梯内部调度算法设计"><a href="#电梯内部调度算法设计" class="headerlink" title="电梯内部调度算法设计"></a>电梯内部调度算法设计</h4><p>电梯的初始方向与第一个加入任务队列的楼层与电梯当前所在楼层的关系有关，此后的调度算法默认保持原来运行方向，直到对应方向上无楼层在目标队列中时再静止或改变方向。</p>
+<p>以电梯上行状态举例，电梯没经过一个楼层将会判断该楼层是否处于任务队列中，若在则将在任务队列中将当前楼层删去，进行停靠、开门动作，并在关门后（不能立马检测是因为在停靠期间乘客还会在电梯内部按下自己想去的楼层导致任务序列更新）对任务序列进行检测以决定下一步行驶方向：</p>
+<ol>
+<li>若任务队列中目标楼层最大值大于当前楼层，则继续保持上行状态</li>
+<li>若任务队列中目标楼层最大值小于于当前楼层，则转换为下行状态</li>
+<li>若任务队列为空，则电梯静止，等待新任务加入任务队列</li>
+</ol>
+<h4 id="电梯内部调度算法实现"><a href="#电梯内部调度算法实现" class="headerlink" title="电梯内部调度算法实现"></a>电梯内部调度算法实现</h4><p>采用异步方法 <strong>setInterval</strong> （在钩子函数中设置及卸载）每隔两秒执行相应回调函数<strong>UpdateStatus</strong>，若此时电梯门为开启状态或任务序列为空则直接跳出，否则根据当前电梯方向更新一次电梯楼层，并检测当前楼层是否在任务序列中</p>
+<p>若在则调用方法 <strong>DoorOpen</strong> 将门打开（在 <strong>DoorOpen</strong> 函数中进行判断避免重复开门，主要是为了避免接下来定时器的重复设定），若正常则调用异步方法 <strong>setTimeout</strong> 使5秒后执行 <strong>DoorClose</strong> （在其中添加判断避免重复执行），若正常则关门，并调用方法 <strong>DirectionNext</strong> 确定下一步行进方向，以此来模拟电梯行进及方向选取</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-attr">methods</span>: &#123;<br>   <span class="hljs-comment">//选择方向</span><br>   <span class="hljs-title class_">DirectionNext</span>() &#123;<br>     <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-property">length</span>) &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">false</span>;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = <span class="hljs-number">0</span>;<br>       <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-keyword">var</span> max = <span class="hljs-title class_">Math</span>.<span class="hljs-property">max</span>.<span class="hljs-title function_">apply</span>(<span class="hljs-title class_">Math</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>);<br>     <span class="hljs-keyword">var</span> min = <span class="hljs-title class_">Math</span>.<span class="hljs-property">min</span>.<span class="hljs-title function_">apply</span>(<span class="hljs-title class_">Math</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>);<br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> == <span class="hljs-number">1</span>) &#123;<br>       <span class="hljs-comment">//电梯上行则看最大值，若做差大于0则继续上行——做差不可能等于0</span><br>       <span class="hljs-keyword">if</span> (max - <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span> &gt; <span class="hljs-number">0</span>) &#123;<br>         <span class="hljs-keyword">return</span>;<br>       &#125; <span class="hljs-keyword">else</span> &#123;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = -<span class="hljs-number">1</span>;<br>       &#125;<br>     &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> == -<span class="hljs-number">1</span>) &#123;<br>       <span class="hljs-keyword">if</span> (min - <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span> &lt; <span class="hljs-number">0</span>) &#123;<br>         <span class="hljs-keyword">return</span>;<br>       &#125; <span class="hljs-keyword">else</span> &#123;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = <span class="hljs-number">1</span>;<br>       &#125;<br>     &#125;<br>   &#125;,<br><br>   <span class="hljs-comment">//开门</span><br>   <span class="hljs-title class_">DoorOpen</span>(time) &#123;<br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span>) &#123;<br>       <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_door</span>) &#123;<br>       <span class="hljs-keyword">return</span>; <span class="hljs-comment">//防止重复设定定时器</span><br>     &#125;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_door</span> = <span class="hljs-literal">true</span>;<br>     <span class="hljs-comment">//两秒后关门</span><br>     <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-title class_">DoorClose</span>();<br>     &#125;, time);<br>   &#125;,<br><br>   <span class="hljs-comment">//关门</span><br>   <span class="hljs-title class_">DoorClose</span>() &#123;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-title class_">DirectionNext</span>();<span class="hljs-comment">//选取下一个方向</span><br>     <br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span>) &#123;<br>       <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_door</span>) &#123;<br>       <span class="hljs-keyword">return</span>; <span class="hljs-comment">//防止重复</span><br>     &#125;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_door</span> = <span class="hljs-literal">false</span>;<br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-property">length</span> == <span class="hljs-number">0</span>) &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">false</span>;<br>     &#125; <span class="hljs-keyword">else</span> &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">true</span>;<br>     &#125;<br>   &#125;,<br><br>   <span class="hljs-comment">//当电梯内有人按下楼层时调用</span><br>   <span class="hljs-title class_">FloorClick</span>(i) &#123;<br>     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i + <span class="hljs-string">&quot;被按下！&quot;</span>);<br>     <span class="hljs-comment">//在当前楼层停止时按下当前楼层按钮会开门</span><br>     <span class="hljs-keyword">if</span> (i == <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> == <span class="hljs-literal">false</span>) &#123;<br>       <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;已在当前楼层停止&quot;</span>);<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-title class_">DoorOpen</span>(<span class="hljs-number">5000</span>); <span class="hljs-comment">//5秒后关门</span><br>       <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-comment">//判断是否在任务队列中</span><br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">indexOf</span>(i) != -<span class="hljs-number">1</span>) &#123;<br>       <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;当前楼层已经在任务队列中了！&quot;</span>);<br>       <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">push</span>(i);<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">buttons_floor</span>[i - <span class="hljs-number">1</span>] = <span class="hljs-literal">true</span>; <span class="hljs-comment">//表示为按钮已按下</span><br>   &#125;,<br>       <br>   <span class="hljs-comment">//间隔1.5秒执行一次，以此来模拟电梯上下行</span><br>   <span class="hljs-title class_">UpdateStatus</span>() &#123;<br>     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;更新电梯状态&quot;</span>);<br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_door</span>) &#123;<br>       <span class="hljs-comment">//若门在开启状态</span><br>       <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-comment">//若任务队列为空，则置为静止状态</span><br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-property">length</span> == <span class="hljs-number">0</span>) &#123;<br>       <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> != <span class="hljs-number">0</span>) &#123;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = <span class="hljs-number">0</span>;<br>       &#125;<br>       <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> != <span class="hljs-literal">false</span>) &#123;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">false</span>;<br>       &#125;<br>       <span class="hljs-keyword">return</span>;<br>     &#125; <span class="hljs-keyword">else</span> &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">true</span>;<br>     &#125;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span>;<br>     <span class="hljs-comment">//若任务队列不空</span><br>     <span class="hljs-comment">//判断当前楼层是否在队列中——即是否到达目的地</span><br>     <span class="hljs-keyword">var</span> <span class="hljs-title class_">ArriveCheck</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span>);<br>     <span class="hljs-comment">//若不在队列中——未到达目的地</span><br>     <span class="hljs-keyword">if</span> (<span class="hljs-title class_">ArriveCheck</span> == -<span class="hljs-number">1</span>) &#123;<br>       <span class="hljs-comment">//若当前为静止状态</span><br>       <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> == <span class="hljs-number">0</span>) &#123;<br>         <span class="hljs-keyword">let</span> <span class="hljs-title class_">UorD</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>[<span class="hljs-number">0</span>] - <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span>; <span class="hljs-comment">//取第一个任务与当前楼层做差,不可能为0</span><br>         <span class="hljs-keyword">if</span> (<span class="hljs-title class_">UorD</span> &gt; <span class="hljs-number">0</span>) &#123;<br>           <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = <span class="hljs-number">1</span>;<br>         &#125; <span class="hljs-keyword">else</span> &#123;<br>           <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = -<span class="hljs-number">1</span>;<br>         &#125;<br>       &#125;<br>     &#125;<br>     <span class="hljs-comment">//若当前不为静止状态——说明此时方向一定正确且未到达</span><br>     <span class="hljs-comment">//若在队列中——已经到达目的地</span><br>     <span class="hljs-keyword">else</span> &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">splice</span>(<span class="hljs-title class_">ArriveCheck</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">//在此将楼层从任务队列中取出来</span><br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">buttons_floor</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span> - <span class="hljs-number">1</span>] = <span class="hljs-literal">false</span>;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">false</span>; <span class="hljs-comment">//先停下来才能开门</span><br>       <br>       <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">mission_floor</span>.<span class="hljs-property">length</span>) &#123;<br>         <span class="hljs-comment">//若任务队列已空则静止</span><br>         <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_moving</span> = <span class="hljs-literal">false</span>;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span> = <span class="hljs-number">0</span>;<br>       &#125;<br><br>       <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span>==<span class="hljs-number">0</span>)&#123;<br>         <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">&quot;upArrive&quot;</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span>);<br>         <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">&quot;downArrive&quot;</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span>);<br>       &#125;<br>       <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span>==<span class="hljs-number">1</span>)&#123;<br>         <span class="hljs-comment">//之前方向为向上</span><br>         <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">&quot;upArrive&quot;</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span>)<br>       &#125;<br>       <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_direction</span>==-<span class="hljs-number">1</span>)&#123;<br>         <span class="hljs-comment">//之前方向为向下</span><br>         <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">&quot;downArrive&quot;</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">cur_floor</span>)<br>       &#125;<br><br>       <span class="hljs-variable language_">this</span>.<span class="hljs-title class_">DoorOpen</span>(<span class="hljs-number">5000</span>);<br>       <span class="hljs-comment">//开门5s后关门，选择下一个任务</span><br>     &#125;<br>   &#125;,<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="电梯外部调度算法设计"><a href="#电梯外部调度算法设计" class="headerlink" title="电梯外部调度算法设计"></a>电梯外部调度算法设计</h4><p>外部调度任务主要是将外部呼叫请求根据楼层、方向及之后一段时间内各个电梯状态，将请求放入合适的电梯的任务序列中，使等待时间尽可能缩小</p>
+<p>当有新的外部呼叫时，检测所有电梯状态并按以下顺序依次进行判断：</p>
+<ol>
+<li><p>若有电梯在此层停靠且下一步行进方向与呼叫方向相同（或静止），则执行开门操作，任务完成；若有电梯在此层但下一步行进方向与呼叫方向相反则先略过</p>
+</li>
+<li><p>若无电梯在此层，则检测是否有在当前方向下会经过该层或静止的电梯，若有则将其加入候选队列</p>
+<blockquote>
+<p>假如在8层有上行呼叫请求，则将当前低于8层的处于上行状态的电梯或者处于静止状态的加入候选队列</p>
+</blockquote>
+</li>
+<li><p>若候选队列仍为空，则使该呼叫请求等待。并调用异步方法<strong>setInterval</strong>。每隔0.5s检测一次电梯群状态（即进行一次1-2判断）。若有电梯满足要求则加入候选队列，并调用<strong>clearInterval</strong>停止计时器检测</p>
+</li>
+</ol>
+<p>在候选队列中选择与呼叫楼层距离最小的电梯，将呼叫楼层加入其任务队列</p>
+<p>采用此方法可以保证选择的电梯到达呼叫层时下一步方向与呼叫方向相同或下一步方向为静止。且在无符合要求的情况下将请求挂起等待，直至满足要求的电梯出现再从中择优，而不是盲目的加入某个电梯的任务队列，提高了效率</p>
+<p>且由于电梯自身在当前方向上无任务时，会改变方向或转为静止态（电梯内部调度算法决定的），因此并不会存在所有电梯一直都不满足、候选队列一直为空的情况，也就是说并不会出现某一外部呼叫请求无限等待的情况</p>
+<h4 id="电梯外部调度算法实现"><a href="#电梯外部调度算法实现" class="headerlink" title="电梯外部调度算法实现"></a>电梯外部调度算法实现</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">methods</span>: &#123;<br>    <br>    <span class="hljs-comment">/*只展示部分方法*/</span><br>    <br>    <span class="hljs-title function_">minDistenceEle</span>(<span class="hljs-params">candidateEles, floor_calling, elevators</span>) &#123;<br>      <span class="hljs-comment">//计算最小距离的电梯</span><br>      <span class="hljs-keyword">var</span> minDistence = <span class="hljs-number">100</span>; <span class="hljs-comment">//一个不可能的极大数</span><br>      <span class="hljs-keyword">var</span> minElevator = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; candidateEles.<span class="hljs-property">length</span>; i++) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">abs</span>(elevators[i].<span class="hljs-property">cur_floor</span> - floor_calling) &lt; minDistence) &#123;<br>          minDistence = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">abs</span>(elevators[i].<span class="hljs-property">cur_floor</span> - floor_calling);<br>          minElevator = i;<br>        &#125;<br>      &#125;<br>      <span class="hljs-keyword">return</span> candidateEles[minElevator];<br>    &#125;,<br><br>    <span class="hljs-title function_">upHandler</span>(<span class="hljs-params">arg</span>) &#123;<br>      <span class="hljs-keyword">let</span> elevators = <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">elevator_group</span>;<br>      <span class="hljs-keyword">let</span> &#123; direction_calling, floor_calling &#125; = arg;<br>      <span class="hljs-keyword">var</span> candidateEles = [];<br>      <span class="hljs-comment">//处理外部调度信息</span><br>      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;<br>        <span class="hljs-keyword">if</span> (elevators[i].<span class="hljs-property">cur_direction</span> == <span class="hljs-number">0</span>) &#123;<br>          <span class="hljs-comment">//若有静止电梯</span><br>          <span class="hljs-keyword">if</span> (elevators[i].<span class="hljs-property">cur_floor</span> == floor_calling) &#123;<br>            <span class="hljs-comment">//若电梯就静止在此层则开门就直接ok</span><br>            <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">uparriveHandler</span>(floor_calling);<br>            elevators[i].<span class="hljs-title class_">DoorOpen</span>(<span class="hljs-number">2000</span>);<br>            <span class="hljs-keyword">return</span>;<br>          &#125;<br>          <span class="hljs-comment">//若静止但不在此层则加入候选队列</span><br>          candidateEles.<span class="hljs-title function_">push</span>(i);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (<br>          elevators[i].<span class="hljs-property">cur_direction</span> == direction_calling &amp;&amp;<br>          floor_calling - elevators[i].<span class="hljs-property">cur_floor</span> &gt; <span class="hljs-number">0</span><br>        ) &#123;<br>          <span class="hljs-comment">//若电梯同向且尚未经过此层则加入候选队列</span><br>          candidateEles.<span class="hljs-title function_">push</span>(i);<br>        &#125;<br>      &#125;<br><br>      <span class="hljs-keyword">if</span> (candidateEles.<span class="hljs-property">length</span> != <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-comment">//若已有则挑选然后加入任务队列</span><br>        <span class="hljs-keyword">let</span> elevator_index = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">minDistenceEle</span>(<br>          candidateEles,<br>          floor_calling,<br>          elevators<br>        );<br>        <span class="hljs-keyword">if</span> (<br>          <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">elevator_group</span>[elevator_index].<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">indexOf</span>(<br>            floor_calling<br>          ) == -<span class="hljs-number">1</span><br>        ) &#123;<br>          <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">elevator_group</span>[elevator_index].<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">push</span>(<br>            floor_calling<br>          );<br>        &#125;<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br>      <span class="hljs-comment">//处理无候选结果,此时情况为电梯反向或虽然同向但已经经过了该层</span><br>      <span class="hljs-comment">//此时丢入等待序列，每0.5秒检测一次电梯状态，直至出现静止电梯或同向未经过该层电梯再结束子线程</span><br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(floor_calling+<span class="hljs-string">&quot;层的&quot;</span>+direction_calling+<span class="hljs-string">&quot;请求放入等待队列&quot;</span>);<br>      <span class="hljs-keyword">var</span> id=<span class="hljs-built_in">setInterval</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">upWaiting</span>,<span class="hljs-number">100</span>,&#123;direction_calling,floor_calling,id&#125;);<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">waiting_queue</span>[<span class="hljs-number">0</span>][floor_calling-<span class="hljs-number">1</span>]=id;<br>    &#125;,<br><br>    <span class="hljs-title function_">upWaiting</span>(<span class="hljs-params">arg</span>) &#123;<br>      <span class="hljs-keyword">let</span> &#123; direction_calling, floor_calling &#125; = arg;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;检测&quot;</span>+floor_calling+<span class="hljs-string">&quot;层的&quot;</span>+direction_calling+<span class="hljs-string">&quot;请求&quot;</span>);<br>      <span class="hljs-keyword">let</span> elevators = <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">elevator_group</span>;<br>      <span class="hljs-keyword">var</span> candidateEles = [];<br>      <span class="hljs-keyword">var</span> id =  <span class="hljs-variable language_">this</span>.<span class="hljs-property">waiting_queue</span>[<span class="hljs-number">0</span>][floor_calling-<span class="hljs-number">1</span>];<br>      <span class="hljs-comment">//处理外部调度信息</span><br>      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;<br>        <span class="hljs-keyword">if</span> (elevators[i].<span class="hljs-property">cur_direction</span> == <span class="hljs-number">0</span>) &#123;<br>          <span class="hljs-comment">//若有静止电梯</span><br>          <span class="hljs-keyword">if</span> (elevators[i].<span class="hljs-property">cur_floor</span> == floor_calling) &#123;<br>            <span class="hljs-comment">//若电梯就静止在此层则开门就直接ok</span><br>            elevators[i].<span class="hljs-title class_">DoorOpen</span>(<span class="hljs-number">2000</span>);<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(floor_calling+<span class="hljs-string">&quot;层的&quot;</span>+direction_calling+<span class="hljs-string">&quot;请求已满足，在&quot;</span>+ i+<span class="hljs-string">&quot;号电梯&quot;</span>);<br>            <span class="hljs-built_in">clearInterval</span>(id);    <span class="hljs-comment">//停用计时器</span><br>            <span class="hljs-keyword">return</span>;<br>          &#125;<br>          <span class="hljs-comment">//若静止但不在此层则加入候选队列</span><br>          candidateEles.<span class="hljs-title function_">push</span>(i);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (<br>          elevators[i].<span class="hljs-property">cur_direction</span> == direction_calling &amp;&amp;<br>          floor_calling - elevators[i].<span class="hljs-property">cur_floor</span> &gt; <span class="hljs-number">0</span><br>        ) &#123;<br>          <span class="hljs-comment">//若电梯同向且尚未经过此层则加入候选队列</span><br>          candidateEles.<span class="hljs-title function_">push</span>(i);<br>        &#125;<br>      &#125;<br><br>      <span class="hljs-keyword">if</span> (candidateEles.<span class="hljs-property">length</span> != <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-comment">//若已有则挑选然后加入任务队列</span><br>        <span class="hljs-keyword">let</span> elevator_index = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">minDistenceEle</span>(<br>          candidateEles,<br>          floor_calling,<br>          elevators<br>        );<br>        <span class="hljs-keyword">if</span> (<br>          <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">elevator_group</span>[elevator_index].<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">indexOf</span>(<br>            floor_calling<br>          ) == -<span class="hljs-number">1</span><br>        ) &#123;<br>          <span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">elevator_group</span>[elevator_index].<span class="hljs-property">mission_floor</span>.<span class="hljs-title function_">push</span>(<br>            floor_calling<br>          );<br>        &#125;<br>        <span class="hljs-built_in">clearInterval</span>(id);<span class="hljs-comment">//停用计时器</span><br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(floor_calling+<span class="hljs-string">&quot;层的&quot;</span>+direction_calling+<span class="hljs-string">&quot;请求已放入&quot;</span>+ elevator_index+<span class="hljs-string">&quot;号电梯任务队列&quot;</span>);<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(floor_calling+<span class="hljs-string">&quot;层的&quot;</span>+direction_calling+<span class="hljs-string">&quot;请求暂未满足 继续等待&quot;</span>);<br>      <span class="hljs-keyword">return</span>;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在外部面板按钮被按下后，<strong>FloorBoard</strong> 会发出相应事件，被父组件<strong>App</strong>捕获到后调用方法 <strong>upHandler</strong> 实行调度算法，在需要时采用异步方法<strong>setInterval</strong>，每隔0.1s调用一次<strong>upWaiting</strong>方法进行检测，直至某次检测候选队列不为空再调用<strong>clearInterval</strong>清除定时器，完成择优，并将呼叫请求楼层放入相应电梯任务序列</p>
+<h3 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ol>
+<li><p>电梯在当前方向<strong>无任务后便会改变方向或停止</strong>，而不会到达顶层或底层再改变状态，提高效率</p>
+</li>
+<li><p>在有外部呼叫请求时，<strong>优先将与呼叫方向同向且未经过呼叫楼层的电梯及静止状态的电梯加入候选队列</strong>，再根据距离择优选取，在保证所分配的电梯到达呼叫楼层时，下一步行进方向与呼叫方向同向或静止的前提下能尽快到达</p>
+</li>
+<li><p>在当前所有电梯都不能满足与呼叫方向同向且未经过呼叫楼层的电梯或为静止状态时<strong>先使呼叫请求等待</strong>，<strong>待出现满足条件的电梯时再加入候选队列</strong>，择优选取。且由于优点一，呼叫请求等待的时间往往不会很长</p>
+</li>
+</ol>
+<h4 id="不足之处"><a href="#不足之处" class="headerlink" title="不足之处"></a>不足之处</h4><ol>
+<li><p>外部请求等待时，一旦碰到方向符合要求的电梯便将其加入候选队列。有些情况下这样的任务分配依旧过早，考虑下面的情况：</p>
+<blockquote>
+<p>假设有两部电梯，第一部目前在15楼，要上行至17楼，随后队列为空；第二部目前在5楼，要上行至8楼，随后队列为空。不考虑电梯停靠时间，每过3s电梯行进一层，现在在3楼外部发出上行呼叫。</p>
+<p>按照本项目外部调度算法，一开始两部电梯都不满足，请求等待；</p>
+<p>6s后，第一部电梯上行至17楼后静止，此时第二部在7楼继续上行，依据算法则将3楼上行请求加入第一部电梯任务队列，其再经过42s到达第三层，共用时48s；</p>
+<p>若分配给第二部电梯，则只需24s</p>
+</blockquote>
+<p>但实际条件下由于乘客会随时在电梯内选择新楼层，这种情况并不会经常出现</p>
+<blockquote>
+<p>例如若在第二部电梯在5-8楼上行期间，电梯内部乘客按下了17楼按钮，那么第二部电梯应当在8楼停靠后继续上行至17层，此时显然没有第一部电梯快</p>
+</blockquote>
+<p>考虑到这种情况，最终仍采取了当前的外部调度的算法，至少在保证了正确呼叫的前提下尽可能的根据电梯的最新状态进行调度</p>
+</li>
+<li><p>此处的电梯仍为理想化模型，在调度时未考虑电梯载重量与当前乘客重量；同时也未考虑到电梯停靠时间所带来的影响，下一步完善的话会考虑根据电梯现有的任务队列计算停靠次数，与电梯至目标楼层的距离分别加权求和，择优调度</p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/" class="category-chain-item">课程项目分享</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">#操作系统</a>
+      
+        <a href="/tags/%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6/">#进程调度</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>电梯调度-OS课程项目</div>
+      <div>http://example.com/2022/05/11/电梯调度-OS课程项目/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Pikachudy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月11日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/03/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-OS%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE/" title="内存管理-OS课程项目">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">内存管理-OS课程项目</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/24/ES6%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/" title="ES6用法总结">
+                        <span class="hidden-mobile">ES6用法总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

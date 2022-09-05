@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Pikachudy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="内存管理——请求调页存储管理方式模拟[TOC] 开发环境开发语言：Javascript+html+css 开发框架：Vue.js 3.0+Element-plus 开发工具：Vue-cli、Vue-devtools、VScode、Edge 实现方法引入Element-plus组件作为UI，采用Vue3框架进行组件化开发 采用 JS 模拟内存管理调页请求逻辑，使用 Vue3 开发单页面应用，便于实时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存管理-OS课程项目">
+<meta property="og:url" content="http://example.com/2022/06/03/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-OS%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE/index.html">
+<meta property="og:site_name" content="C137">
+<meta property="og:description" content="内存管理——请求调页存储管理方式模拟[TOC] 开发环境开发语言：Javascript+html+css 开发框架：Vue.js 3.0+Element-plus 开发工具：Vue-cli、Vue-devtools、VScode、Edge 实现方法引入Element-plus组件作为UI，采用Vue3框架进行组件化开发 采用 JS 模拟内存管理调页请求逻辑，使用 Vue3 开发单页面应用，便于实时">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-03T05:47:29.000Z">
+<meta property="article:modified_time" content="2022-09-05T08:54:45.138Z">
+<meta property="article:author" content="Pikachudy">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="内存管理">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>内存管理-OS课程项目 - C137</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>C137</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="内存管理-OS课程项目"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-06-03 13:47" pubdate>
+          2022年6月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          47 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">内存管理-OS课程项目</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="内存管理——请求调页存储管理方式模拟"><a href="#内存管理——请求调页存储管理方式模拟" class="headerlink" title="内存管理——请求调页存储管理方式模拟"></a>内存管理——请求调页存储管理方式模拟</h1><p>[TOC]</p>
+<h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><p>开发语言：Javascript+html+css</p>
+<p>开发框架：Vue.js 3.0+Element-plus</p>
+<p>开发工具：Vue-cli、Vue-devtools、VScode、Edge</p>
+<h3 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h3><p>引入Element-plus组件作为UI，采用Vue3框架进行组件化开发</p>
+<p>采用 JS 模拟内存管理调页请求逻辑，使用 Vue3 开发单页面应用，便于实时渲染、信息实时显示</p>
+<p>使用链表来辅助实现LRU算法</p>
+<h3 id="项目浏览"><a href="#项目浏览" class="headerlink" title="项目浏览"></a>项目浏览</h3><ul>
+<li>联网进入<a target="_blank" rel="noopener" href="https://pikachudy.github.io/MemoryScheduling/">MemoryScheduling (pikachudy.github.io)</a>在线浏览</li>
+</ul>
+<h3 id="界面UI说明"><a href="#界面UI说明" class="headerlink" title="界面UI说明"></a>界面UI说明</h3><ul>
+<li><p>左栏：</p>
+<ul>
+<li><p>上部分为内存块信息，包含块序号、块内存放页的页号（若没有则为 null）、块起始地址（每次重置时随机给出）</p>
+</li>
+<li><p>中间为当前已执行指令条数、当前缺页数、当前缺页率</p>
+</li>
+<li><p>下部分为调页信息表，记录了目前为止每次调度的相关信息，包括调入的逻辑页、调至的块号、被替换出的逻辑页（若无则为 null）</p>
+</li>
+<li><p>支持滚动条滚动翻阅所有信息</p>
+</li>
+</ul>
+</li>
+<li><p>右栏：</p>
+<ul>
+<li>记录每次指令执行的相关信息，包括指令id、指令位于的逻辑页号、包含指令的页当前在那一块内存块中（若不在内存中则为 null）、指令在内存中的地址（若不在内存中则为 null ），下一条指令的 id</li>
+<li>当指令不在内存中时，会<strong>先显示指令缺页信息</strong>，在缺页请求调度完成后，会<strong>再次打印本条指令</strong>调度后信息</li>
+<li>支持滚动条滚动翻阅所有信息</li>
+</ul>
+</li>
+<li><p>顶栏：</p>
+<ul>
+<li>单步执行按钮：点击后执行一条指令，若发生缺页则完成缺页请求调度后<strong>再次打印本条指令信息</strong></li>
+<li>自动执行按钮：通过右侧输入框设置合适的指令执行速度，点击自动执行按钮，会根据设置的执行速度自动执行指令，直到单击重置按钮或320条指令全部执行完毕</li>
+<li>重置按钮：点击后恢复到初始状态</li>
+</ul>
+</li>
+</ul>
+<h3 id="源码文件功能介绍"><a href="#源码文件功能介绍" class="headerlink" title="源码文件功能介绍"></a>源码文件功能介绍</h3><p>本次的页面较为简单，实现功能的主要文件为<strong>Pageshow.vue</strong>及<strong>linklist.js</strong></p>
+<h4 id="文件预览"><a href="#文件预览" class="headerlink" title="文件预览"></a>文件预览</h4><table>
+<thead>
+<tr>
+<th>文件名称</th>
+<th>负责内容</th>
+<th>子组件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>App.vue</td>
+<td>页面根组件</td>
+<td>PageShow.vue</td>
+</tr>
+<tr>
+<td>PageShow.vue</td>
+<td>实现页面UI展示、整体逻辑</td>
+<td>null</td>
+</tr>
+<tr>
+<td>linklist.js</td>
+<td>实现链表数据结构，便于实现LRU算法</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h4 id="主要文件源码变量介绍"><a href="#主要文件源码变量介绍" class="headerlink" title="主要文件源码变量介绍"></a>主要文件源码变量介绍</h4><h5 id="PageShow-vue"><a href="#PageShow-vue" class="headerlink" title="PageShow.vue"></a>PageShow.vue</h5><h6 id="维护变量"><a href="#维护变量" class="headerlink" title="维护变量"></a>维护变量</h6><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> &#123;<br>      <span class="hljs-attr">run_continuously</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//是否自动执行——与按钮相关</span><br>      <span class="hljs-attr">interval</span>: <span class="hljs-number">0.5</span>, <span class="hljs-comment">//自动运行间隔</span><br>      <span class="hljs-attr">timer</span>: <span class="hljs-literal">null</span>, <span class="hljs-comment">//存储定时器返回的对象以控制</span><br><br>      <span class="hljs-attr">exe_num</span>: <span class="hljs-number">0</span>, <span class="hljs-comment">//已执行条数</span><br>      <span class="hljs-attr">page_miss</span>: <span class="hljs-number">0</span>, <span class="hljs-comment">//缺页数</span><br>      <span class="hljs-title class_">LRUlist</span>: <span class="hljs-keyword">new</span> <span class="hljs-title function_">linklist</span>(), <span class="hljs-comment">//LRU算法辅助链表</span><br>      <span class="hljs-attr">exe_order</span>: [], <span class="hljs-comment">//指令执行顺序</span><br>      <span class="hljs-attr">mem_block_num</span>: <span class="hljs-number">4</span>, <span class="hljs-comment">//内存块数</span><br>      <span class="hljs-attr">process_page_num</span>: <span class="hljs-number">32</span>, <span class="hljs-comment">//进程页数</span><br>      <span class="hljs-attr">instruction_num</span>: <span class="hljs-number">320</span>, <span class="hljs-comment">//指令数</span><br>        <br>      <span class="hljs-attr">physical_memory</span>: [], <span class="hljs-comment">//内存信息</span><br>      <span class="hljs-attr">page_table</span>: [], <span class="hljs-comment">//页表信息</span><br>      <span class="hljs-attr">instruction_record</span>: [], <span class="hljs-comment">//指令记录</span><br>      <span class="hljs-attr">schedule_record</span>: [], <span class="hljs-comment">//调度记录</span><br>    &#125;;<br></code></pre></td></tr></table></figure>
+
+<h6 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h6><p>组件内部维护了请求调页存储管理的所有信息，除了基本的内存块数、进程页数、进程指令总数等参数外，还用了对象数组<strong>physical_memory</strong>, <strong>page_table</strong> 来存储各个内存块信息、页表信息，以此模拟内存管理中相应的数据结构；并设置了<strong>instruction_record</strong> 及<strong>schedule_record</strong> 来记录每次指令执行相关信息、调度相关信息以便于在表格中展示。</p>
+<h6 id="主要对象属性介绍"><a href="#主要对象属性介绍" class="headerlink" title="主要对象属性介绍"></a>主要对象属性介绍</h6><p><strong>physical_memory</strong> 数组中的内存对象包含以下属性：</p>
+<ul>
+<li>id：内存块号</li>
+<li>start_addr:  起始地址</li>
+<li>length：内存地址长度——<strong>以一个指令长为单位</strong></li>
+<li>content：内存块中存放的信息的逻辑页号，若无则为 null</li>
+</ul>
+<p>初始化函数代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">memory_init</span>(<span class="hljs-params"></span>) &#123;<br>     <span class="hljs-keyword">let</span> start = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * <span class="hljs-number">5</span>); <span class="hljs-comment">//随机获取0-5的整数</span><br>     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-property">mem_block_num</span>; ++i) &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">physical_memory</span>.<span class="hljs-title function_">push</span>(&#123;<br>         <span class="hljs-attr">id</span>: i, <span class="hljs-comment">//内存号</span><br>         <span class="hljs-attr">start_addr</span>: i + start + <span class="hljs-string">&quot;0&quot;</span>,<br>         <span class="hljs-attr">length</span>: <span class="hljs-number">10</span>,<br>         <span class="hljs-attr">content</span>: <span class="hljs-string">&quot;null&quot;</span>, <span class="hljs-comment">//内存块存放内容</span><br>       &#125;);<br>     &#125;<br>   &#125;,<br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>page_table</strong> 数组中的各个页信息包含以下属性：</p>
+<ul>
+<li>id：逻辑页号</li>
+<li>valid：有效位——标识是否在内存块中</li>
+<li>memory_id：若位于内存块中，则此处记录位于的内存块号，否则为 null</li>
+</ul>
+<p>初始化函数代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">pagetable_init</span>(<span class="hljs-params"></span>) &#123;<br>     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-property">process_page_num</span>; ++i) &#123;<br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_table</span>.<span class="hljs-title function_">push</span>(&#123;<br>         <span class="hljs-attr">id</span>: i, <span class="hljs-comment">//逻辑页号</span><br>         <span class="hljs-attr">valid</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//是否有效——是否在内存中</span><br>         <span class="hljs-attr">memory_id</span>: <span class="hljs-literal">null</span>, <span class="hljs-comment">//位于主存块号</span><br>       &#125;);<br>     &#125;<br>   &#125;,<br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="linklist-js"><a href="#linklist-js" class="headerlink" title="linklist.js"></a>linklist.js</h5><h6 id="主要变量"><a href="#主要变量" class="headerlink" title="主要变量"></a>主要变量</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">linklist</span> &#123;<br>    <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">item</span> = <span class="hljs-number">0</span>; <span class="hljs-comment">//头结点显示当前列表长度</span><br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">next</span> = <span class="hljs-literal">null</span>;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="主要成员函数（方法）"><a href="#主要成员函数（方法）" class="headerlink" title="主要成员函数（方法）"></a>主要成员函数（方法）</h6><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">linklist</span> &#123;<br>    ...<br>    <span class="hljs-comment">//在链表末尾添加结点</span><br>    <span class="hljs-title function_">append</span>(<span class="hljs-params">item</span>) &#123;<br>       ...<br>    &#125;<br>    <span class="hljs-comment">//删除链表末尾结点——返回被删除的结点的内容</span><br>    <span class="hljs-title function_">deleteLast</span>(<span class="hljs-params"></span>) &#123;<br>       ...<br>    &#125;<br>    <span class="hljs-comment">//寻找元素是否在链表中，若存在则返回相应位置（头结点位置为0），若不存在则返回-1</span><br>    <span class="hljs-title function_">findIndex</span>(<span class="hljs-params">item</span>) &#123;<br>       ...<br>    &#125;<br>    <span class="hljs-comment">//将指定位置元素移至链表头（头结点后第一个）——成功返回true，失败返回false</span><br>    <span class="hljs-title function_">movetoHead</span>(<span class="hljs-params">index</span>) &#123;<br>       ...<br>    &#125;<br>    <span class="hljs-comment">//在链表首位插入元素</span><br>    <span class="hljs-title function_">insertHead</span>(<span class="hljs-params">item</span>) &#123;<br>       ...<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="算法设计及实现"><a href="#算法设计及实现" class="headerlink" title="算法设计及实现"></a>算法设计及实现</h3><h4 id="随机指令生成算法"><a href="#随机指令生成算法" class="headerlink" title="随机指令生成算法"></a>随机指令生成算法</h4><p>设指令id为0-319，共320条：</p>
+<ol>
+<li><p>在<strong>0－318</strong>条指令之间，随机选取一个起始执行指令，如序号为m</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> randomOrder = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * (<span class="hljs-variable language_">this</span>.<span class="hljs-property">instruction_num</span> - <span class="hljs-number">1</span>)); <span class="hljs-comment">//随机选取起始执行指令</span><br>     <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>.<span class="hljs-title function_">push</span>(randomOrder);<br>     i++;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>顺序执行下一条指令，即序号为<strong>m+1</strong>的指令</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>.<span class="hljs-title function_">push</span>(randomOrder + <span class="hljs-number">1</span>); <span class="hljs-comment">//执行序号+1的指令</span><br>   i++;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>通过随机数，跳转到前地址部分<strong>0－m-1</strong>中的某个指令处，其序号为<strong>m<del>1</del></strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript">randomOrder = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * randomOrder); <span class="hljs-comment">//跳转至前0 - m-1</span><br>   <span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>.<span class="hljs-title function_">push</span>(randomOrder);<br>   i++;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>顺序执行下一条指令，即序号为<strong>m<del>1</del>+1</strong>的指令</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>.<span class="hljs-title function_">push</span>(randomOrder + <span class="hljs-number">1</span>); <span class="hljs-comment">//执行序号+1的指令</span><br>i++;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>通过随机数，跳转到后地址部分<strong>m<del>1</del>+2~318</strong>中的某条指令处，其序号为<strong>m<del>2</del></strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">randomOrder = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<br>     <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * (<span class="hljs-variable language_">this</span>.<span class="hljs-property">instruction_num</span> - randomOrder - <span class="hljs-number">4</span>) + randomOrder + <span class="hljs-number">2</span><br>   ); <span class="hljs-comment">//跳转至后 m+2 - 319</span><br>   <span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>.<span class="hljs-title function_">push</span>(randomOrder);<br>   i++;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>顺序执行下一条指令，即<strong>m<del>2</del>+1</strong>处的指令</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>.<span class="hljs-title function_">push</span>(randomOrder + <span class="hljs-number">1</span>); <span class="hljs-comment">//执行序号+1的指令</span><br>i++;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>重复跳转到前地址部分、顺序执行、跳转到后地址部分、顺序执行的过程，直到执行完毕</p>
+</li>
+</ol>
+<h4 id="LRU算法"><a href="#LRU算法" class="headerlink" title="LRU算法"></a>LRU算法</h4><p>LRU算法要求替换最近最少使用的块，可以用链表来实现，链表中结点值为<strong>存有页项</strong>的内存块号，相当于一个内存块链表。</p>
+<p>采用以下规则确定根据LRU算法应该被替换出的块：</p>
+<ol>
+<li><p>当访问后未发生缺页时，将访问的页所在的内存块移动至链表首结点处；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//页表处于内存中</span><br><span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">movetoHead</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">findIndex</span>(page.<span class="hljs-property">memory_id</span>)); <span class="hljs-comment">//将页表所在块移至链表头</span><br><span class="hljs-variable language_">this</span>.<span class="hljs-title function_">instruct_record_update</span>(insturction_id); <span class="hljs-comment">//更新记录</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>当访问后发生了缺页：</p>
+<ol>
+<li><p>若内存块未被占满（即链表长度小于内存总块数），则新建结点，结点值为页刚刚放入的内存块号，并将该结点插至链表顶端；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">length</span>() &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-property">mem_block_num</span>) &#123;<br>       <span class="hljs-comment">//若内存块中有剩余空间则将该页直接放入内存块，将对应的内存块插至链表首位置</span><br>       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-property">mem_block_num</span>; ++i) &#123;<br>         <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">physical_memory</span>[i].<span class="hljs-property">content</span> == <span class="hljs-string">&quot;null&quot;</span>) &#123;<br>           <span class="hljs-comment">//将页放入内存</span><br>           <span class="hljs-variable language_">this</span>.<span class="hljs-property">physical_memory</span>[i].<span class="hljs-property">content</span> = page_in.<span class="hljs-property">id</span>;<br>           <span class="hljs-comment">//将内存块号插至链表首位</span><br>           <span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">insertHead</span>(i);<br>           <span class="hljs-keyword">return</span> &#123;<br>             <span class="hljs-attr">page_in</span>: page_in.<span class="hljs-property">id</span>,<br>             <span class="hljs-attr">dst_block</span>: i,<br>             <span class="hljs-attr">page_out</span>: <span class="hljs-string">&quot;null&quot;</span>,<br>           &#125;;<br>         &#125;<br>       &#125;<br>     &#125; <br> ...<br></code></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>若内存块已被占满（即链表长度等于内存总块数），则链表末尾的结点对应的内存块应当是要发生替换的块，将其从链表中删除，则转换成了上一种情况；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript">...	<br> <span class="hljs-keyword">else</span> &#123;<br>       <span class="hljs-comment">//若内存中无剩余空间</span><br>       <span class="hljs-keyword">let</span> dst_block_id = <span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">deleteLast</span>(); <span class="hljs-comment">//删除链尾元素，确定替换的块号</span><br>       <span class="hljs-keyword">let</span> page_out_id = <span class="hljs-variable language_">this</span>.<span class="hljs-property">physical_memory</span>[dst_block_id].<span class="hljs-property">content</span>; <span class="hljs-comment">//被调出的页号</span><br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">physical_memory</span>[dst_block_id].<span class="hljs-property">content</span> = page_in.<span class="hljs-property">id</span>; <span class="hljs-comment">//将新页调入</span><br>       <span class="hljs-comment">//将内存块号插至首位</span><br>       <span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">insertHead</span>(dst_block_id);<br>       <span class="hljs-keyword">return</span> &#123;<br>         <span class="hljs-attr">page_in</span>: page_in.<span class="hljs-property">id</span>,<br>         <span class="hljs-attr">dst_block</span>: dst_block_id,<br>         <span class="hljs-attr">page_out</span>: page_out_id,<br>       &#125;;<br>     &#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ol>
+<h4 id="请求调页存储管理算法"><a href="#请求调页存储管理算法" class="headerlink" title="请求调页存储管理算法"></a>请求调页存储管理算法</h4><ol>
+<li><p>在执行一条新指令时，根据其id（逻辑地址）获取其相应的逻辑页号，再通过查询页表获取该页对象，其包含相关信息——是否位于内存中，位于哪一个内存块等</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> insturction_id = <span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_order</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">exe_num</span>]; <span class="hljs-comment">//获取对应的指令id</span><br>   <span class="hljs-keyword">let</span> page_id = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(insturction_id / <span class="hljs-number">10</span>); <span class="hljs-comment">//对应页号</span><br>   <span class="hljs-keyword">let</span> page = <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_table</span>[page_id]; <span class="hljs-comment">//获取页表对应项</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>判断该页是否位于内存中，即是否发生缺页：</p>
+<ol>
+<li><p>若发生缺页，则根据LRU算法选择被替换块，进行替换、修改页表对应项，并记录相关信息</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (page.<span class="hljs-property">valid</span> == <span class="hljs-literal">false</span>) &#123;<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">instruct_record_update</span>(insturction_id); <span class="hljs-comment">//更新记录</span><br>  <span class="hljs-comment">//若页表不在内存中</span><br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_miss</span>++;<br>  <span class="hljs-keyword">let</span> cur_schedule = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">LRU</span>(page); <span class="hljs-comment">//利用LRU算法进行调度，返回调度信息</span><br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">schedule_record</span>.<span class="hljs-title function_">push</span>(cur_schedule); <span class="hljs-comment">//记录调度信息</span><br>  <span class="hljs-comment">//修改页表内容</span><br>  <span class="hljs-comment">//修改调入页信息</span><br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_table</span>[page_id].<span class="hljs-property">valid</span> = <span class="hljs-literal">true</span>;<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_table</span>[page_id].<span class="hljs-property">memory_id</span> = cur_schedule.<span class="hljs-property">dst_block</span>;<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">instruct_record_update</span>(insturction_id); <span class="hljs-comment">//更新记录</span><br>  <span class="hljs-comment">//修改调出页信息</span><br>  <span class="hljs-keyword">if</span> (cur_schedule.<span class="hljs-property">page_out</span> != <span class="hljs-string">&quot;null&quot;</span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_table</span>[cur_schedule.<span class="hljs-property">page_out</span>].<span class="hljs-property">valid</span> = <span class="hljs-literal">false</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">page_table</span>[cur_schedule.<span class="hljs-property">page_out</span>].<span class="hljs-property">memory_id</span> = <span class="hljs-string">&quot;null&quot;</span>;<br>  &#125;<br>&#125; <br>...<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>若未发生缺页，则将页表调入空闲内存块，调整LRU辅助链表，记录相关信息</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript">...<br>   <span class="hljs-keyword">else</span> &#123;<br>     <span class="hljs-comment">//页表处于内存中</span><br>     <span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">movetoHead</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">LRUlist</span>.<span class="hljs-title function_">findIndex</span>(page.<span class="hljs-property">memory_id</span>)); <span class="hljs-comment">//将页表所在块移至链表头</span><br>     <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">instruct_record_update</span>(insturction_id); <span class="hljs-comment">//更新记录</span><br>   &#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>执行下一条指令</p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/" class="category-chain-item">课程项目分享</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">#操作系统</a>
+      
+        <a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">#内存管理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>内存管理-OS课程项目</div>
+      <div>http://example.com/2022/06/03/内存管理-OS课程项目/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Pikachudy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年6月3日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/16/%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86-OS%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE/" title="文件管理-OS课程项目">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">文件管理-OS课程项目</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/11/%E7%94%B5%E6%A2%AF%E8%B0%83%E5%BA%A6-OS%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE/" title="电梯调度-OS课程项目">
+                        <span class="hidden-mobile">电梯调度-OS课程项目</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
